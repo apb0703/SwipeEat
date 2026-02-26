@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="SwipeEat" />
+  <meta name="theme-color" content="#ff6b6b" />
+  <meta name="description" content="Swipe right on restaurants together. Match, eat, enjoy." />
+
+  <link rel="manifest" href="/manifest.json" />
+  <!-- Apple touch icon (generated via JS canvas if icons not present) -->
+  <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+
+  <title>SwipeEat</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- ── Lobby ─────────────────────────────────────────────────────────────── -->
+<div id="screen-lobby" class="screen active">
+  <header class="logo-header">
+    <h1 class="logo">🍽 SwipeEat</h1>
+    <p class="tagline">Swipe right on restaurants together.</p>
+  </header>
+
+  <div class="card-panel">
+    <div class="tab-bar" role="tablist">
+      <button class="tab active" data-tab="create" role="tab" aria-selected="true">Create Room</button>
+      <button class="tab" data-tab="join" role="tab" aria-selected="false">Join Room</button>
+    </div>
+
+    <!-- Create -->
+    <div id="tab-create" class="tab-content active" role="tabpanel">
+      <label>Your name
+        <input id="create-username" type="text" placeholder="e.g. Alex" maxlength="24"
+               autocomplete="nickname" autocapitalize="words" />
+      </label>
+      <button id="btn-create" class="btn-primary">Create Room</button>
+    </div>
+
+    <!-- Join -->
+    <div id="tab-join" class="tab-content" role="tabpanel">
+      <label>Your name
+        <input id="join-username" type="text" placeholder="e.g. Jordan" maxlength="24"
+               autocomplete="nickname" autocapitalize="words" />
+      </label>
+      <label>Room code
+        <input id="join-code" type="text" placeholder="AB3X" maxlength="4"
+               class="code-input" autocomplete="off" autocapitalize="characters" />
+      </label>
+      <button id="btn-join" class="btn-primary">Join Room</button>
+    </div>
+
+    <p id="lobby-error" class="error-msg" role="alert"></p>
+  </div>
+</div>
+
+<!-- ── Waiting room ───────────────────────────────────────────────────────── -->
+<div id="screen-waiting" class="screen" aria-live="polite">
+  <header class="room-header">
+    <h2>Room <span id="display-room-code" class="room-code"></span></h2>
+    <p class="hint">Share this code with friends, then start swiping!</p>
+  </header>
+
+  <div class="card-panel">
+    <h3>Players in room</h3>
+    <ul id="user-list" class="user-list" aria-label="Players"></ul>
+
+    <div id="location-status" class="location-status">
+      <span class="loc-icon">📍</span>
+      <span id="location-text">Tap Start to find nearby restaurants</span>
+    </div>
+
+    <button id="btn-start" class="btn-primary">Start Swiping</button>
+  </div>
+</div>
+
+<!-- ── Loading screen ─────────────────────────────────────────────────────── -->
+<div id="screen-loading" class="screen">
+  <div class="loading-wrap">
+    <div class="spinner"></div>
+    <p id="loading-text">Finding restaurants near you…</p>
+  </div>
+</div>
+
+<!-- ── Swipe screen ───────────────────────────────────────────────────────── -->
+<div id="screen-swipe" class="screen">
+  <header class="room-header">
+    <div class="room-pill">
+      Room <strong id="swipe-room-code"></strong>
+      <span id="swipe-users" class="user-count"></span>
+    </div>
+    <div class="progress-bar-wrap" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+      <div id="progress-bar" class="progress-bar"></div>
+    </div>
+  </header>
+
+  <div id="card-stack" class="card-stack" aria-label="Restaurant cards">
+    <div class="card-empty"><p>Loading restaurants…</p></div>
+  </div>
+
+  <div class="swipe-buttons">
+    <button id="btn-nope" class="swipe-btn nope" aria-label="Nope">✕</button>
+    <button id="btn-like" class="swipe-btn like" aria-label="Yum!">♥</button>
+  </div>
+</div>
+
+<!-- ── Done screen ────────────────────────────────────────────────────────── -->
+<div id="screen-done" class="screen">
+  <div class="done-message">
+    <div class="done-icon">🎉</div>
+    <h2>You're done swiping!</h2>
+    <p>Waiting for others… matches will still appear.</p>
+    <button id="btn-view-matches" class="btn-primary" style="margin-top:24px">View Matches</button>
+  </div>
+</div>
+
+<!-- ── Match overlay ──────────────────────────────────────────────────────── -->
+<div id="match-overlay" class="overlay hidden" role="dialog" aria-modal="true" aria-label="Match found">
+  <div class="match-card">
+    <div class="match-badge">🎉 It's a Match!</div>
+    <img id="match-thumb" src="" alt="Restaurant photo" />
+    <div class="match-body">
+      <h2 id="match-name"></h2>
+      <div id="match-meta" class="match-meta"></div>
+      <div id="match-tags" class="match-tags"></div>
+      <!-- Google Map embed for matched restaurant -->
+      <div id="match-map" class="match-map" aria-label="Restaurant location map"></div>
+    </div>
+    <button id="btn-dismiss-match" class="btn-primary">Keep Swiping</button>
+  </div>
+</div>
+
+<!-- ── Matches sidebar ────────────────────────────────────────────────────── -->
+<div id="matches-sidebar" class="sidebar hidden" role="complementary" aria-label="Matched restaurants">
+  <div class="sidebar-header">
+    <h3>Matches</h3>
+    <button id="btn-close-sidebar" class="close-btn" aria-label="Close">✕</button>
+  </div>
+  <ul id="match-list" class="match-list"></ul>
+</div>
+
+<button id="btn-show-matches" class="fab hidden" aria-label="View matches">
+  🍴 <span id="match-count">0</span>
+</button>
+
+<!-- Google Maps JS API – loaded only when needed by app.js -->
+<script id="gmap-script" data-src="https://maps.googleapis.com/maps/api/js?key=GMAPS_KEY_PLACEHOLDER&callback=initMaps&libraries=places" defer></script>
+
+<script src="app.js"></script>
+</body>
+</html>
