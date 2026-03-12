@@ -1,5 +1,5 @@
-// SwipeEat Service Worker
-const CACHE_NAME = 'swipeeat-v1';
+// Swipe2Dine Service Worker
+const CACHE_NAME = 'swipe2dine-v1';
 const STATIC_ASSETS = [
   '/',
   '/index.html',

@@ -1,5 +1,5 @@
 /**
- * SwipeEat – Frontend
+ * Swipe2Dine – Frontend
  *
  * Screens: lobby → waiting → (loading) → swipe → done
  * Real-time: WebSocket

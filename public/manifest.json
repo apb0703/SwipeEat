@@ -1,6 +1,6 @@
 {
-  "name": "SwipeEat",
-  "short_name": "SwipeEat",
+  "name": "Swipe2Dine",
+  "short_name": "Swipe2Dine",
   "description": "Swipe right on restaurants together. Match, eat, enjoy.",
   "start_url": "/",
   "display": "standalone",

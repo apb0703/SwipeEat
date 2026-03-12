@@ -1,5 +1,5 @@
 /**
- * SwipeEat – Server
+ * Swipe2Dine – Server
  *
  * Security layers:
  *  • Helmet sets hardened HTTP headers (CSP, HSTS, X-Frame-Options, …)
@@ -359,7 +359,7 @@ wss.on('connection', (ws, req) => {
 // ─── Start ────────────────────────────────────────────────────────────────────
 
 httpServer.listen(PORT, () => {
-  console.log(`SwipeEat running at http://localhost:${PORT}`);
+  console.log(`Swipe2Dine running at http://localhost:${PORT}`);
   if (!GOOGLE_PLACES_KEY) {
     console.warn('⚠  GOOGLE_PLACES_KEY not set – set it in .env or environment variables.');
   }
